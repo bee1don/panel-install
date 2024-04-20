@@ -236,9 +236,7 @@ apt install git -y # install git
 
 
 git clone https://github.com/bee1don/panel.git .
-else
-git clone -b $git_branch git@github.com:bee1don/panel.git .
-fi
+
 check_last_command_execution "Smarters VPN Panel Cloned Successfully" "Smarters VPN Panel Cloning Failed"
 }
 ### Function to create .env File ####
