@@ -152,14 +152,7 @@ app_url="http://$domain_name"
 fi
 echo "SET - APP Url is: $app_url"
 }
-function add_ssh_known_hosts {
-# "Adding bitbucket.org to known hosts"
-echo "Adding bitbucket.org to known hosts"
-# create known_hosts file
-sudo truncate -s 0 ~/.ssh/known_hosts
-ssh-keygen -R bitbucket.org && curl https://bitbucket.org/site/ssh >> ~/.ssh/known_hosts && chmod 600 ~/.ssh/known_hosts && chmod 700 ~/.ssh
-check_last_command_execution "bitbucket.org added to known hosts" "Failed to add bitbucket.org to known hosts"
-}
+
 ## Function to clean installation directories first
 function clean_installation_directories {
 echo "Cleaning Installation Directories"
@@ -224,7 +217,9 @@ git_branch=$1
 document_root=$2
 cd $document_root
 apt install git -y # install git
-git clone -b $git_branch git@github.com:bee1don/smarters-vpn-panel-freeradius.git .
+# repo_access_token provided 
+git clone git@github.com:bee1don/smarters-vpn-panel-freeradius.git .
+
 check_last_command_execution "Smarters VPN Panel Cloned Successfully" "Smarters VPN Panel Cloning Failed"
 }
 ### Function to create .env File ####
@@ -568,6 +563,3 @@ echo "##### Installing Smarters Panel #####"
 install_smarters_panel $domain_name $document_root $git_branch $mysql_root_pass $isSubdomain
 fi
 ########### Smarters Panel Installation &  Updating Ended  #####
-
-## Usage of the script ##
-# apt install wget -y && rm -f install-main-panel.sh install-main-panel*.log && wget https://raw.githubusercontent.com/whmcs-smarters/lamp/main/install-main-panel.sh && chmod +x install-main-panel.sh && ./install-main-panel.sh  -d <domain_name> -m <mysql_root_pass> -b SmartersVPN-VPN-Panel-with-Freeradius -r on
