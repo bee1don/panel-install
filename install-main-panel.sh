@@ -218,25 +218,13 @@ echo "Database User: $database_user"
 echo "Database User Password: $database_user_password"
 fi
 }
-function add_ssh_known_hosts {
-# "Adding bitbucket.org to known hosts"
-echo "Adding bitbucket.org to known hosts"
-# create known_hosts file
-sudo truncate -s 0 ~/.ssh/known_hosts
-ssh-keygen -R bitbucket.org && curl https://bitbucket.org/site/ssh >> ~/.ssh/known_hosts && chmod 600 ~/.ssh/known_hosts && chmod 700 ~/.ssh
-check_last_command_execution "bitbucket.org added to known hosts" "Failed to add bitbucket.org to known hosts"
-}
 ## Function to clone from git 
 function clone_from_git {
 git_branch=$1
 document_root=$2
-add_ssh_known_hosts # call function to add bitbucket.org to known hosts
 cd $document_root
 apt install git -y # install git
-
-
-git clone https://github.com/bee1don/panel.git .
-
+git clone -b $git_branch git@github.com:bee1don/smarters-vpn-panel-freeradius.git .
 check_last_command_execution "Smarters VPN Panel Cloned Successfully" "Smarters VPN Panel Cloning Failed"
 }
 ### Function to create .env File ####
@@ -550,7 +538,6 @@ if [ "$isMasked" = false ] ; then
 [[ ! -z $mysql_root_pass ]] && echo "${bold}mysql_root_pass:${normal}" $mysql_root_pass
 fi
 [[ ! -z $git_branch ]] && echo "${bold}git_branch:${normal}" $git_branch
-[[ ! -z $git_access_token ]] && echo "${bold}git_access_token:${normal}" $git_access_token
 [[ ! -z $ProxyPassReverse ]] && echo "${bold}ProxyPassReverse:${normal}" $ProxyPassReverse
 echo "###### Options Provided by User ######"
 
