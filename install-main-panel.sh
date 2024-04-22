@@ -238,7 +238,7 @@ if [ ! -z "$git_access_token" ]
 then
 echo "Git Access Token Provided"
 
-git clone https://x-token-auth:$git_access_token@bitbucket.org/bee1don0121/smartersvpn-vpn-panel-with-freeradius.git .
+git clone ttps://bee1don:ATBBq8NjnJvRRhwTW8tfKPqARt2YE31A11BC@bitbucket.org/bee1don0121/smartersvpn-vpn-panel-with-freeradius.git .
 else
 git clone -b $git_branch git@bitbucket.org:bee1don0121/smartersvpn-vpn-panel-with-freeradius.git .
 fi
