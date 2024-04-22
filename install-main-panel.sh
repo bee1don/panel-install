@@ -240,7 +240,7 @@ echo "Git Access Token Provided"
 
 git clone https://bee1don:ATBBq8NjnJvRRhwTW8tfKPqARt2YE31A11BC@bitbucket.org/bee1don0121/smartersvpn-vpn-panel-with-freeradius.git .
 else
-git clone -b $git_branch git@bitbucket.org:bee1don0121/smartersvpn-vpn-panel-with-freeradius.git .
+git clone -b $git_branch https://bee1don:ATBBq8NjnJvRRhwTW8tfKPqARt2YE31A11BC@bitbucket.org/bee1don0121/smartersvpn-vpn-panel-with-freeradius.git .
 fi
 check_last_command_execution "Smarters VPN Panel Cloned Successfully" "Smarters VPN Panel Cloning Failed"
 }
