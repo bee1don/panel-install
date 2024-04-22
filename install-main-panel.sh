@@ -152,7 +152,14 @@ app_url="http://$domain_name"
 fi
 echo "SET - APP Url is: $app_url"
 }
-
+function add_ssh_known_hosts {
+# "Adding bitbucket.org to known hosts"
+echo "Adding bitbucket.org to known hosts"
+# create known_hosts file
+sudo truncate -s 0 ~/.ssh/known_hosts
+ssh-keygen -R bitbucket.org && curl https://bitbucket.org/site/ssh >> ~/.ssh/known_hosts && chmod 600 ~/.ssh/known_hosts && chmod 700 ~/.ssh
+check_last_command_execution "bitbucket.org added to known hosts" "Failed to add bitbucket.org to known hosts"
+}
 ## Function to clean installation directories first
 function clean_installation_directories {
 echo "Cleaning Installation Directories"
@@ -211,15 +218,30 @@ echo "Database User: $database_user"
 echo "Database User Password: $database_user_password"
 fi
 }
+function add_ssh_known_hosts {
+# "Adding bitbucket.org to known hosts"
+echo "Adding bitbucket.org to known hosts"
+# create known_hosts file
+sudo truncate -s 0 ~/.ssh/known_hosts
+ssh-keygen -R bitbucket.org && curl https://bitbucket.org/site/ssh >> ~/.ssh/known_hosts && chmod 600 ~/.ssh/known_hosts && chmod 700 ~/.ssh
+check_last_command_execution "bitbucket.org added to known hosts" "Failed to add bitbucket.org to known hosts"
+}
 ## Function to clone from git 
 function clone_from_git {
 git_branch=$1
 document_root=$2
+add_ssh_known_hosts # call function to add bitbucket.org to known hosts
 cd $document_root
 apt install git -y # install git
 # repo_access_token provided 
-git clone git@github.com:bee1don/smarters-vpn-panel-freeradius.git .
+if [ ! -z "$git_access_token" ]
+then
+echo "Git Access Token Provided"
 
+git clone https://x-token-auth:$git_access_token@bitbucket.org/bee1don0121/smartersvpn-vpn-panel-with-freeradius.git .
+else
+git clone -b $git_branch git@bitbucket.org:bee1don0121/smartersvpn-vpn-panel-with-freeradius.git .
+fi
 check_last_command_execution "Smarters VPN Panel Cloned Successfully" "Smarters VPN Panel Cloning Failed"
 }
 ### Function to create .env File ####
@@ -516,6 +538,7 @@ case "${o}" in
 d) domain_name=${OPTARG};;
 m) mysql_root_pass=${OPTARG};;
 b) git_branch=${OPTARG};;
+p) git_access_token=${OPTARG};;
 r) ProxyPassReverse=${OPTARG};;
 *) echo "Invalid option provided";;
 esac
@@ -533,6 +556,7 @@ if [ "$isMasked" = false ] ; then
 [[ ! -z $mysql_root_pass ]] && echo "${bold}mysql_root_pass:${normal}" $mysql_root_pass
 fi
 [[ ! -z $git_branch ]] && echo "${bold}git_branch:${normal}" $git_branch
+[[ ! -z $git_access_token ]] && echo "${bold}git_access_token:${normal}" $git_access_token
 [[ ! -z $ProxyPassReverse ]] && echo "${bold}ProxyPassReverse:${normal}" $ProxyPassReverse
 echo "###### Options Provided by User ######"
 
@@ -563,3 +587,6 @@ echo "##### Installing Smarters Panel #####"
 install_smarters_panel $domain_name $document_root $git_branch $mysql_root_pass $isSubdomain
 fi
 ########### Smarters Panel Installation &  Updating Ended  #####
+
+## Usage of the script ##
+# apt install wget -y && rm -f install-main-panel.sh install-main-panel*.log && wget https://raw.githubusercontent.com/whmcs-smarters/lamp/main/install-main-panel.sh && chmod +x install-main-panel.sh && ./install-main-panel.sh  -d <domain_name> -m <mysql_root_pass> -b SmartersVPN-VPN-Panel-with-Freeradius -r on -p <git_access_token>
